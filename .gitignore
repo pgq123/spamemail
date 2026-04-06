@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+pytest-cache-files-*/
+.tmp/
+data/
+docs/
+models/
+results/
