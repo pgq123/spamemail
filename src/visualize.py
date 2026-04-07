@@ -431,8 +431,8 @@ def plot_three_model_metric_dashboard(
         }
     )
     for col in ["\u51c6\u786e\u7387", "\u53ec\u56de\u7387", "F1", "ROC-AUC", "\u7efc\u5408\u5f97\u5206"]:
-        table_view[col] = table_view[col].map(lambda value: f"{float(value):.4f}")
-    table_view["\u54cd\u5e94(ms)"] = table_view["\u54cd\u5e94(ms)"].map(lambda value: f"{float(value):.2f}")
+        table_view[col] = table_view[col].map(lambda value: f"{float(value):.3f}")
+    table_view["\u54cd\u5e94(ms)"] = table_view["\u54cd\u5e94(ms)"].map(lambda value: f"{float(value):.3f}")
     table_view["\u6a21\u578b"] = table_view["\u6a21\u578b"].replace(
         {
             "\u9884\u8bad\u7ec3 DistilBERT": "\u9884\u8bad\u7ec3\nDistilBERT",

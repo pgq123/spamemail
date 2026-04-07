@@ -166,6 +166,24 @@ def _fill_metric_defaults(metrics_frame: pd.DataFrame) -> pd.DataFrame:
     return working
 
 
+def _round_numeric_for_tables(
+    frame: pd.DataFrame,
+    *,
+    digits: int = 3,
+    exclude_columns: set[str] | None = None,
+) -> pd.DataFrame:
+    """Round numeric table fields for paper-ready readability."""
+
+    excluded = exclude_columns or set()
+    working = frame.copy()
+    for column in working.columns:
+        if column in excluded:
+            continue
+        if pd.api.types.is_numeric_dtype(working[column]):
+            working[column] = working[column].round(digits)
+    return working
+
+
 def _normalized_gap_to_best(series: pd.Series, higher_is_better: bool) -> pd.Series:
     """Compute per-model relative gap to best performer for one metric."""
 
@@ -321,9 +339,21 @@ def _write_comparison_artifacts(
     dashboard_fig = comparison_dir / "three_model_metrics_dashboard.png"
     chapter_bridge_fig = comparison_dir / "chapter_4_to_5_bridge.png"
 
-    metrics_frame.to_csv(comparison_csv, index=False)
-    method_table.to_csv(method_csv, index=False)
-    stats_frame.to_csv(stats_csv, index=False)
+    metrics_table_export = _round_numeric_for_tables(
+        metrics_frame,
+        digits=3,
+        exclude_columns={"rank", "method_1_raw_rank", "method_2_gap_rank", "method_3_composite_rank", "is_best"},
+    )
+    method_table_export = _round_numeric_for_tables(
+        method_table,
+        digits=3,
+        exclude_columns={"method_1_raw_rank", "method_2_gap_rank", "method_3_composite_rank", "rank"},
+    )
+    stats_table_export = _round_numeric_for_tables(stats_frame, digits=3)
+
+    metrics_table_export.to_csv(comparison_csv, index=False)
+    method_table_export.to_csv(method_csv, index=False)
+    stats_table_export.to_csv(stats_csv, index=False)
     comparison_json.write_text(
         json.dumps(
             {
@@ -335,8 +365,8 @@ def _write_comparison_artifacts(
                     "method_2_gap_score: relative gap to best across all core metrics",
                     "method_3_composite_rank: weighted normalized score including response time",
                 ],
-                "models": metrics_frame.to_dict(orient="records"),
-                "metric_statistics": stats_frame.to_dict(orient="records"),
+                "models": metrics_table_export.to_dict(orient="records"),
+                "metric_statistics": stats_table_export.to_dict(orient="records"),
             },
             indent=2,
             ensure_ascii=False,

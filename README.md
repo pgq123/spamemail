@@ -177,9 +177,9 @@ MLP 基线采用 TF-IDF + 两层前馈神经网络：
 
 | 模型 | Accuracy | Precision | Recall | F1 | ROC-AUC |
 |---|---:|---:|---:|---:|---:|
-| 预训练 BERT | 0.9916 | 0.9487 | 0.9911 | 0.9694 | 0.9987 |
-| MLP | 0.9761 | 0.9182 | 0.9018 | 0.9099 | 0.9730 |
-| 从零训练 BERT | 0.8017 | 0.3937 | 0.8929 | 0.5464 | 0.8758 |
+| 预训练 BERT | 0.992 | 0.949 | 0.991 | 0.969 | 0.999 |
+| MLP | 0.976 | 0.918 | 0.902 | 0.910 | 0.973 |
+| 从零训练 BERT | 0.802 | 0.394 | 0.893 | 0.546 | 0.876 |
 
 从当前结果看：
 
@@ -278,6 +278,18 @@ results/comparison/<时间戳>/
 
 ```powershell
 conda run -n paper python -m src.flowchart_export --output-dir docs/flowcharts
+```
+
+模型架构图（MLP 与 DistilBERT）可通过以下命令导出：
+
+```powershell
+conda run -n paper python -m src.model_architecture_export --output-dir docs/flowcharts
+```
+
+核心代码截图可通过以下命令导出：
+
+```powershell
+conda run -n paper python -m src.code_snapshot_export --project-root . --output-dir docs/code_snapshots
 ```
 
 ## 测试
